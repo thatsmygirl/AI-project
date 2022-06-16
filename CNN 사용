@@ -7,6 +7,7 @@ import numpy as np
 from tensorflow import keras
 import matplotlib.pyplot as plt
 
+
 crops = 'drive/MyDrive/New Plant Diseases Dataset(Augmented)/New Plant Diseases Dataset(Augmented)'
 
 train = os.path.join(crops, 'train')
@@ -32,54 +33,55 @@ valid_generator =  test_datagen.flow_from_directory(valid,
                                                     class_mode  = 'binary',
                                                     target_size = (244, 244))
 
+
 model = keras.Sequential([
-                          keras.layers.Conv2D(16, (3,3), activation = "relu"),
-                          keras.layers.MaxPooling2D((2,2)), 
-                          keras.layers.Conv2D(32, (3,3), activation = "relu"),
-                          keras.layers.MaxPooling2D((2,2)), 
-                          keras.layers.Conv2D(64, (3,3), activation = "relu"),
-                          keras.layers.MaxPooling2D((2,2)), 
-                          keras.layers.Conv2D(64, (3,3), activation = "relu"),
-                          keras.layers.MaxPooling2D((2,2)), 
-                          keras.layers.Conv2D(64, (3,3), activation = "relu"),
-                          keras.layers.MaxPooling2D((2,2)), 
-                          keras.layers.Flatten(),
-                          keras.layers.Dense(128, activation="relu"),
-                          keras.layers.Dense(1)
+                          keras.layers.Conv2D(64, (3,3), activation = 'softmax'),
+                          keras.layers.MaxPooling2D((13,13)), 
+                          keras.layers.Conv2D(64, (3,3), activation = 'softmax'),
+                          keras.layers.MaxPooling2D((13,13)),
+                          keras.layers.Dense(128, activation='softmax'),
+                          keras.layers.Dense(13)
 ])
 
-model.compile(optimizer="adam", metrics=["accuracy"], loss="sparse_categorical_crossentropy")
-early = keras.callbacks.EarlyStopping(monitor="val_loss", patience=10)
+model.compile(optimizer='Adam',metrics=['accuracy'], loss='sparse_categorical_crossentropy')
+
 
 history = model.fit(train_generator,
                     validation_data=valid_generator,
                     epochs=20,
-                    steps_per_epoch=100,
-                    validation_steps=50)
+                    validation_steps=50,
+                    steps_per_epoch=100)
+
+
+
 scores = model.evaluate(valid_generator, steps=5)
 print("%s: %.2f%%" %(model.metrics_names[1], scores[1]*100))
+
+
 
 loss = history.history['loss']
 val_loss = history.history['val_loss']
 
 epochs = range(len(loss))
 
-fig = plt.figure(figsize=(10,6))
 plt.plot(epochs,loss,c="red",label="Training")
 plt.plot(epochs,val_loss,c="blue",label="Validation")
 plt.xlabel("Epochs")
 plt.ylabel("Loss")
 plt.legend()
 
-acc = history.history['categorical_accuracy']
-val_acc = history.history['val_categorical_accuracy']
+
+
+acc = history.history['accuracy']
+val_acc = history.history['val_accuracy']
 
 epochs = range(len(acc))
 
-fig = plt.figure(figsize=(10,6))
 plt.plot(epochs,acc,c="red",label="Training")
 plt.plot(epochs,val_acc,c="blue",label="Validation")
 plt.xlabel("Epochs")
 plt.ylabel("Accuracy")
 plt.legend()
+
+
 
