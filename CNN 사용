@@ -1,229 +1,86 @@
-import os
-import tensorflow as tf
-import numpy as np
+from google.colab import drive
+drive.mount('/content/drive')
 
-import matplotlib.pyplot as plt
+import tensorflow as tf
+import os
+import numpy as np
 from tensorflow import keras
-from tensorflow.keras import layers
-from tensorflow.keras.models import Sequential
+import matplotlib.pyplot as plt
 
 crops = 'drive/MyDrive/New Plant Diseases Dataset(Augmented)/New Plant Diseases Dataset(Augmented)'
 
 train = os.path.join(crops, 'train')
 valid = os.path.join(crops, 'valid')
 
-train_data = os.path.join(train, 'Apple___Apple_scab')
-train_data1 = os.path.join(train, 'Apple___Black_rot')
-train_data2 = os.path.join(train, 'Apple___Cedar_apple_rust')
-train_data3 = os.path.join(train, 'Apple___healthy')
-train_data4 = os.path.join(train, 'Blueberry___healthy')
-train_data5 = os.path.join(train, 'Cherry_(including_sour)___Powdery_mildew')
-train_data6 = os.path.join(train, 'Cherry_(including_sour)___healthy')
-train_data7 = os.path.join(train, 'Corn_(maize)___Common_rust_')
-train_data8 = os.path.join(train, 'Corn_(maize)___healthy')
-train_data9 = os.path.join(train, 'Grape___Black_rot')
-train_data10 = os.path.join(train, 'Grape___Esca_(Black_Measles)')
-train_data11 = os.path.join(train, 'Grape___Leaf_blight_(Isariopsis_Leaf_Spot)')
-train_data12 = os.path.join(train, 'Grape___healthy')
-train_data13 = os.path.join(train, 'Orange___Haunglongbing_(Citrus_greening)')
-train_data14 = os.path.join(train, 'Peach___Bacterial_spot')
-train_data15 = os.path.join(train, 'Peach___healthy')
-train_data16 = os.path.join(train, 'Pepper,_bell___Bacterial_spot')
-train_data17 = os.path.join(train, 'Pepper,_bell___healthy')
-train_data18 = os.path.join(train, 'Potato___Early_blight')
-train_data19 = os.path.join(train, 'Potato___Late_blight')
-train_data20 = os.path.join(train, 'Potato___healthy')
-train_data21 = os.path.join(train, 'Raspberry___healthy')
-train_data22 = os.path.join(train, 'Soybean___healthy')
-train_data23 = os.path.join(train, 'Squash___Powdery_mildew')
-train_data24 = os.path.join(train, 'Strawberry___Leaf_scorch')
-train_data25 = os.path.join(train, 'Strawberry___healthy')
-train_data26 = os.path.join(train, 'Tomato___Bacterial_spot')
-train_data27 = os.path.join(train, 'Tomato___Early_blight')
-train_data28 = os.path.join(train, 'Tomato___Late_blight')
-train_data29 = os.path.join(train, 'Tomato___Leaf_Mold')
-train_data30 = os.path.join(train, 'Tomato___Septoria_leaf_spot')
-train_data31 = os.path.join(train, 'Tomato___Spider_mites Two-spotted_spider_mite')
-train_data32 = os.path.join(train, 'Tomato___Target_Spot')
-train_data33 = os.path.join(train, 'Tomato___Tomato_Yellow_Leaf_Curl_Virus')
-train_data34 = os.path.join(train, 'Tomato___Tomato_mosaic_virus')
-train_data35 = os.path.join(train, 'Tomato___healthy')
 
+train_datagen = keras.preprocessing.image.ImageDataGenerator(rescale = 1.0/255.0,
+                                   shear_range = 0.2,
+                                   zoom_range = 0.2,
+                                   width_shift_range = 0.2,
+                                   height_shift_range = 0.2 )
 
-train_data_list1 = os.listdir(train_data)
-train_data_list2 = os.listdir(train_data1)
-train_data_list3 = os.listdir(train_data2)
-train_data_list4 = os.listdir(train_data3)
-train_data_list5 = os.listdir(train_data4)
-train_data_list6 = os.listdir(train_data5)
-train_data_list7 = os.listdir(train_data6)
-train_data_list8 = os.listdir(train_data7)
-train_data_list9 = os.listdir(train_data8)
-train_data_list10 = os.listdir(train_data9)
-train_data_list11 = os.listdir(train_data10)
-train_data_list12 = os.listdir(train_data11)
-train_data_list13 = os.listdir(train_data12)
-train_data_list14 = os.listdir(train_data13)
-train_data_list15 = os.listdir(train_data14)
-train_data_list16 = os.listdir(train_data15)
-train_data_list17 = os.listdir(train_data16)
-train_data_list18 = os.listdir(train_data17)
-train_data_list19 = os.listdir(train_data18)
-train_data_list20 = os.listdir(train_data19)
-train_data_list21 = os.listdir(train_data20)
-train_data_list22 = os.listdir(train_data21)
-train_data_list23 = os.listdir(train_data22)
-train_data_list24 = os.listdir(train_data23)
-train_data_list25 = os.listdir(train_data24)
-train_data_list26 = os.listdir(train_data25)
-train_data_list27 = os.listdir(train_data26)
-train_data_list28 = os.listdir(train_data27)
-train_data_list29 = os.listdir(train_data28)
-train_data_list30 = os.listdir(train_data29)
-train_data_list31 = os.listdir(train_data30)
-train_data_list32 = os.listdir(train_data31)
-train_data_list33 = os.listdir(train_data32)
-train_data_list34 = os.listdir(train_data33)
-train_data_list35 = os.listdir(train_data34)
-train_data_list36 = os.listdir(train_data35)
- 
-train_data_list = train_data_list1 + train_data_list2 + train_data_list3 + train_data_list4 + train_data_list5 + train_data_list6 + train_data_list7 + train_data_list8 + train_data_list9 + train_data_list10 + train_data_list11 + train_data_list12 + train_data_list13 + train_data_list14 + train_data_list15 + train_data_list16 + train_data_list17 + train_data_list18 + train_data_list19 + train_data_list20 + train_data_list21 + train_data_list22 + train_data_list23 + train_data_list24 + train_data_list25 + train_data_list26 + train_data_list27 + train_data_list28 + train_data_list29 + train_data_list30 + train_data_list31 + train_data_list32 + train_data_list33 + train_data_list34 + train_data_list35 + train_data_list36
-
-
-print(len(train_data_list))
+test_datagen  = keras.preprocessing.image.ImageDataGenerator( rescale = 1.0/255.0 )
 
 
 
-valid_data = os.path.join(valid, 'Apple___Apple_scab')
-valid_data1 = os.path.join(valid, 'Apple___Black_rot')
-valid_data2 = os.path.join(valid, 'Apple___Cedar_apple_rust')
-valid_data3 = os.path.join(valid, 'Apple___healthy')
-valid_data4 = os.path.join(valid, 'Blueberry___healthy')
-valid_data5 = os.path.join(valid, 'Cherry_(including_sour)___Powdery_mildew')
-valid_data6 = os.path.join(valid, 'Cherry_(including_sour)___healthy')
-valid_data7 = os.path.join(valid, 'Corn_(maize)___Common_rust_')
-valid_data8 = os.path.join(valid, 'Corn_(maize)___healthy')
-valid_data9 = os.path.join(valid, 'Grape___Black_rot')
-valid_data10 = os.path.join(valid, 'Grape___Esca_(Black_Measles)')
-valid_data11 = os.path.join(valid, 'Grape___Leaf_blight_(Isariopsis_Leaf_Spot)')
-valid_data12 = os.path.join(valid, 'Grape___healthy')
-valid_data13 = os.path.join(valid, 'Orange___Haunglongbing_(Citrus_greening)')
-valid_data14 = os.path.join(valid, 'Peach___Bacterial_spot')
-valid_data15 = os.path.join(valid, 'Peach___healthy')
-valid_data16 = os.path.join(valid, 'Pepper,_bell___Bacterial_spot')
-valid_data17 = os.path.join(valid, 'Pepper,_bell___healthy')
-valid_data18 = os.path.join(valid, 'Potato___Early_blight')
-valid_data19 = os.path.join(valid, 'Potato___Late_blight')
-valid_data20 = os.path.join(valid, 'Potato___healthy')
-valid_data21 = os.path.join(valid, 'Raspberry___healthy')
-valid_data22 = os.path.join(valid, 'Soybean___healthy')
-valid_data23 = os.path.join(valid, 'Squash___Powdery_mildew')
-valid_data24 = os.path.join(valid, 'Strawberry___Leaf_scorch')
-valid_data25 = os.path.join(valid, 'Strawberry___healthy')
-valid_data26 = os.path.join(valid, 'Tomato___Bacterial_spot')
-valid_data27 = os.path.join(valid, 'Tomato___Early_blight')
-valid_data28 = os.path.join(valid, 'Tomato___Late_blight')
-valid_data29 = os.path.join(valid, 'Tomato___Leaf_Mold')
-valid_data30 = os.path.join(valid, 'Tomato___Septoria_leaf_spot')
-valid_data31 = os.path.join(valid, 'Tomato___Spider_mites Two-spotted_spider_mite')
-valid_data32 = os.path.join(valid, 'Tomato___Target_Spot')
-valid_data33 = os.path.join(valid, 'Tomato___Tomato_Yellow_Leaf_Curl_Virus')
-valid_data34 = os.path.join(valid, 'Tomato___Tomato_mosaic_virus')
-valid_data35 = os.path.join(valid, 'Tomato___healthy')
+train_generator = train_datagen.flow_from_directory(train,
+                                                  batch_size=32,
+                                                  class_mode='binary',
+                                                  target_size=(244, 244))
+valid_generator =  test_datagen.flow_from_directory(valid,
+                                                    batch_size=32,
+                                                    class_mode  = 'binary',
+                                                    target_size = (244, 244))
 
-
-valid_data_list1 = os.listdir(valid_data)
-valid_data_list2 = os.listdir(valid_data1)
-valid_data_list3 = os.listdir(valid_data2)
-valid_data_list4 = os.listdir(valid_data3)
-valid_data_list5 = os.listdir(valid_data4)
-valid_data_list6 = os.listdir(valid_data5)
-valid_data_list7 = os.listdir(valid_data6)
-valid_data_list8 = os.listdir(valid_data7)
-valid_data_list9 = os.listdir(valid_data8)
-valid_data_list10 = os.listdir(valid_data9)
-valid_data_list11 = os.listdir(valid_data10)
-valid_data_list12 = os.listdir(valid_data11)
-valid_data_list13 = os.listdir(valid_data12)
-valid_data_list14 = os.listdir(valid_data13)
-valid_data_list15 = os.listdir(valid_data14)
-valid_data_list16 = os.listdir(valid_data15)
-valid_data_list17 = os.listdir(valid_data16)
-valid_data_list18 = os.listdir(valid_data17)
-valid_data_list19 = os.listdir(valid_data18)
-valid_data_list20 = os.listdir(valid_data19)
-valid_data_list21 = os.listdir(valid_data20)
-valid_data_list22 = os.listdir(valid_data21)
-valid_data_list23 = os.listdir(valid_data22)
-valid_data_list24 = os.listdir(valid_data23)
-valid_data_list25 = os.listdir(valid_data24)
-valid_data_list26 = os.listdir(valid_data25)
-valid_data_list27 = os.listdir(valid_data26)
-valid_data_list28 = os.listdir(valid_data27)
-valid_data_list29 = os.listdir(valid_data28)
-valid_data_list30 = os.listdir(valid_data29)
-valid_data_list31 = os.listdir(valid_data30)
-valid_data_list32 = os.listdir(valid_data31)
-valid_data_list33 = os.listdir(valid_data32)
-valid_data_list34 = os.listdir(valid_data33)
-valid_data_list35 = os.listdir(valid_data34)
-valid_data_list36 = os.listdir(valid_data35)
- 
-valid_data_list = valid_data_list1 + valid_data_list2 + valid_data_list3 + valid_data_list4 + valid_data_list5 + valid_data_list6 + valid_data_list7 + valid_data_list8 + valid_data_list9 + valid_data_list10 + valid_data_list11 + valid_data_list12 + valid_data_list13 + valid_data_list14 + valid_data_list15 + valid_data_list16 + valid_data_list17 + valid_data_list18 + valid_data_list19 + valid_data_list20 + valid_data_list21 + valid_data_list22 + valid_data_list23 + valid_data_list24 + valid_data_list25 + valid_data_list26 + valid_data_list27 + valid_data_list28 + valid_data_list29 + valid_data_list30 + valid_data_list31 + valid_data_list32 + valid_data_list33 + valid_data_list34 + valid_data_list35 + valid_data_list36
-
-
-print(len(valid_data_list))
-
-
-
-
-train_data_list = tf.keras.preprocessing.image_dataset_from_directory(train,batch_size=30, 
-                                                               image_size=(150, 150))
-valid_data_list= tf.keras.preprocessing.image_dataset_from_directory(valid,
-                                              batch_size=20,
-                                              image_size = (150, 150))
-
-history = model.fit(train_data_list,
-                    validation_data = valid_data_list,
-                    steps_per_epoch=100,
-                    epochs=100,
-                    validation_steps=50,
-                    verbose=2)
-
-
-x_train = train_data_list
-x_test = valid_data_list
-y_train = train_data_list
-y_test = valid_data_list
-
-x_train = x_train.astype(float) /255.0
-x_test = x_test.astype(float)/255.0
-y_train = tf.keras.utils.to_categorical(y_train,10)
-y_test = tf.keras.utils.to_categorical(y_test,10)
-
-
-
-
-from tensorflow.keras import layers, models
-
-model = models.Sequential([
-    layers.Conv2D(32, (3, 3), activation='relu', input_shape = (128, 128, 3)),
-    layers.MaxPooling2D(pool_size=(2, 2), strides=(2, 2)),
-    layers.Dropout(0.25),
-    
-    layers.Conv2D(64, (3, 3), activation='relu', padding='same'),
-    layers.MaxPooling2D(pool_size=(2, 2)),
-    layers.Dropout(0.25),
-    
-    layers.Conv2D(64, (3, 3), activation='relu', padding='same'),
-    layers.MaxPooling2D(pool_size=(2, 2)),
-    layers.Dropout(0.25),
-    
-    layers.Flatten(),
-    layers.Dense(512, activation='relu'),
-    layers.Dropout(0.25),
-    layers.Dense(2, activation='softmax')
+model = keras.Sequential([
+                          keras.layers.Conv2D(16, (3,3), activation = "relu"),
+                          keras.layers.MaxPooling2D((2,2)), 
+                          keras.layers.Conv2D(32, (3,3), activation = "relu"),
+                          keras.layers.MaxPooling2D((2,2)), 
+                          keras.layers.Conv2D(64, (3,3), activation = "relu"),
+                          keras.layers.MaxPooling2D((2,2)), 
+                          keras.layers.Conv2D(64, (3,3), activation = "relu"),
+                          keras.layers.MaxPooling2D((2,2)), 
+                          keras.layers.Conv2D(64, (3,3), activation = "relu"),
+                          keras.layers.MaxPooling2D((2,2)), 
+                          keras.layers.Flatten(),
+                          keras.layers.Dense(128, activation="relu"),
+                          keras.layers.Dense(1)
 ])
 
-model.summary()
+model.compile(optimizer="adam", metrics=["accuracy"], loss="sparse_categorical_crossentropy")
+early = keras.callbacks.EarlyStopping(monitor="val_loss", patience=10)
+
+history = model.fit(train_generator,
+                    validation_data=valid_generator,
+                    epochs=20,
+                    steps_per_epoch=100,
+                    validation_steps=50)
+
+scores = model.evaluate(valid_generator, steps=5)
+print("%s: %.2f%%" %(model.metrics_names[1], scores[1]*100))
+
+loss = history.history['loss']
+val_loss = history.history['val_loss']
+
+epochs = range(len(loss))
+
+fig = plt.figure(figsize=(10,6))
+plt.plot(epochs,loss,c="red",label="Training")
+plt.plot(epochs,val_loss,c="blue",label="Validation")
+plt.xlabel("Epochs")
+plt.ylabel("Loss")
+plt.legend()
+
+acc = history.history['categorical_accuracy']
+val_acc = history.history['val_categorical_accuracy']
+
+epochs = range(len(acc))
+
+fig = plt.figure(figsize=(10,6))
+plt.plot(epochs,acc,c="red",label="Training")
+plt.plot(epochs,val_acc,c="blue",label="Validation")
+plt.xlabel("Epochs")
+plt.ylabel("Accuracy")
+plt.legend()
 
